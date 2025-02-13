@@ -1,0 +1,56 @@
+#include <iostream>
+#include <cmath>
+
+using namespace std;
+
+int main() {
+    double a, b, c;
+    
+    cout << "Ingrese el coeficiente a (diferente de 0): ";
+    cin >> a;
+    
+    if (a == 0) {
+        cout << "El coeficiente 'a' no puede ser 0 en una ecuacion cuadratica." << endl;
+        return 1;
+    }
+
+    cout << "Ingrese el coeficiente b (diferente de 0): ";
+    cin >> b;
+    
+    if (b == 0) {
+        cout << "El coeficiente 'b' no puede ser 0." << endl;
+        return 1;
+    }
+
+    cout << "Ingrese el coeficiente c: ";
+    cin >> c;
+
+    double discriminante = b * b - 4 * a * c;
+
+    cout << "Discriminante: " << discriminante << endl;
+
+    if (discriminante > 0) {
+        // Dos soluciones reales distintas
+        double x1 = (-b + sqrt(discriminante)) / (2 * a);
+        double x2 = (-b - sqrt(discriminante)) / (2 * a);
+        cout << "Las soluciones son reales y distintas: " << endl;
+        cout << "x1 = " << x1 << endl;
+        cout << "x2 = " << x2 << endl;
+    } 
+    else if (discriminante == 0) {
+        // Solución única real
+        double x = -b / (2 * a);
+        cout << "La solucion es unica y real: " << endl;
+        cout << "x = " << x << endl;
+    } 
+    else {
+        // Soluciones complejas conjugadas
+        double parteReal = -b / (2 * a);
+        double parteImaginaria = sqrt(abs(discriminante)) / (2 * a);
+        cout << "Las soluciones son complejas y conjugadas: " << endl;
+        cout << "x1 = " << parteReal << " + " << parteImaginaria << "i" << endl;
+        cout << "x2 = " << parteReal << " - " << parteImaginaria << "i" << endl;
+    }
+
+    return 0;
+}
