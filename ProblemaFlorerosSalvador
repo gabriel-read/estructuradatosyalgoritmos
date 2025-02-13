@@ -1,0 +1,18 @@
+#include <iostream>
+
+using namespace std;
+
+int calcularFloreros() {
+    for (int x = 100; x >= 0; x--) { // Buscamos x desde 100 hasta 0
+        if (x % 6 == 0 && (x - 8) % 11 == 0) {
+            return x - 8; // Retorna la cantidad final de floreros
+        }
+    }
+    return -1; // En caso de error
+}
+
+int main() {
+    int florerosRestantes = calcularFloreros();
+    cout << "Salvador tiene " << florerosRestantes << " floreros para vender todavia." << endl;
+    return 0;
+}
