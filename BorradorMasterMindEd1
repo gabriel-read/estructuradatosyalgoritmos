@@ -1,0 +1,140 @@
+#include <iostream>
+#include <ctime>
+#include <cstdlib>
+#include <cstring>
+#include <limits>
+#include <string>
+//---Ver que se puede mejorar para que siga la Big(O)---//
+using namespace std;
+
+const int TAMANO = 4;
+const int RANGO_MIN = 1;
+const int RANGO_MAX = 6;
+const int INTENTOS_MAX = 10;
+
+// -------------------- FUNCION PARA GENERAR CLAVE -------------------- //
+void generarClave(int clave[]) {
+    bool usado[7] = { false };
+    for (int i = 0; i < TAMANO; i++) {
+        int num;
+        do {
+            num = rand() % (RANGO_MAX - RANGO_MIN + 1) + RANGO_MIN;
+        } while (usado[num]);
+        clave[i] = num;
+        usado[num] = true;
+    }
+}
+
+// -------------------- FUNCION PARA VALIDAR ENTRADA -------------------- //
+bool validarEntrada(const string& intentoStr, int intento[]) {
+    if (intentoStr.length() != TAMANO) {
+        cout << "Debes ingresar exactamente 4 digitos.\n";
+        return false;
+    }
+
+    bool usado[7] = { false };
+    for (int i = 0; i < TAMANO; i++) {
+        if (!isdigit(intentoStr[i])) {
+            cout << "Solo se permiten numeros (1-6).\n";
+            return false;
+        }
+        int num = intentoStr[i] - '0';
+        if (num < RANGO_MIN || num > RANGO_MAX) {
+            cout << "Los numeros deben estar entre 1 y 6.\n";
+            return false;
+        }
+        if (usado[num]) {
+            cout << "No puedes repetir numeros.\n";
+            return false;
+        }
+        usado[num] = true;
+        intento[i] = num;
+    }
+    return true;
+}
+
+// -------------------- FUNCION PARA LEER ENTRADA SEGURA -------------------- //
+void leerIntento(int intento[]) {
+    string intentoStr;
+    while (true) {
+        cout << "Introduce 4 numeros entre 1 y 6, sin repetir (ej. 1234): ";
+        cin >> intentoStr;
+
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+        if (validarEntrada(intentoStr, intento)) {
+            break;
+        }
+    }
+}
+
+// -------------------- FUNCION PARA EVALUAR EL INTENTO (CORREGIDA) -------------------- //
+void evaluarIntento(int clave[], int intento[]) {
+    char pistas[TAMANO] = { 'X', 'X', 'X', 'X' };  // X = No acierto por defecto
+
+    // Paso 1: Verificar aciertos exactos (C)
+    for (int i = 0; i < TAMANO; i++) {
+        if (intento[i] == clave[i]) {
+            pistas[i] = 'C';  // Correcto en la posicion correcta
+        }
+    }
+
+    // Paso 2: Verificar aciertos desordenados (F)
+    for (int i = 0; i < TAMANO; i++) {
+        if (pistas[i] != 'C') {
+            for (int j = 0; j < TAMANO; j++) {
+                if (intento[i] == clave[j] && pistas[j] == 'X' && intento[j] != clave[j]) {
+                    pistas[i] = 'F';  // Correcto, pero en la posicion incorrecta
+                    break;
+                }
+            }
+        }
+    }
+
+    // Mostrar pistas
+    cout << "Pistas: ";
+    for (int i = 0; i < TAMANO; i++) {
+        cout << pistas[i] << " ";
+    }
+    cout << "\n----------------------------\n";
+}
+
+// -------------------- FUNCION PRINCIPAL PARA JUGAR -------------------- //
+void jugarMastermind() {
+    int clave[TAMANO];
+    int intento[TAMANO];
+
+    generarClave(clave);
+
+    cout << "\nBienvenido a Mastermind!\n";
+    cout << "Adivina la clave de 4 digitos (1-6) sin repetir numeros.\n";
+    cout << "Tienes un maximo de " << INTENTOS_MAX << " intentos.\n";
+
+    for (int intentos = 1; intentos <= INTENTOS_MAX; intentos++) {
+        cout << "\nIntento #" << intentos << ": ";
+        leerIntento(intento);
+        evaluarIntento(clave, intento);
+
+        // Para verificar que gano
+        if (memcmp(clave, intento, sizeof(clave)) == 0) {
+            cout << "\nCampeon! Has adivinado la clave en " << intentos << " intentos.\n";
+            cout << "Tu puntuacion es: " << (10 - intentos) << "\n";
+            return;
+        }
+    }
+
+    // Si el usuario no adivina
+    cout << "\nPerdiste! La clave era: ";
+    for (int i = 0; i < TAMANO; i++) {
+        cout << clave[i] << " ";
+    }
+    cout << "\nVuelva a intentarlo.\n";
+}
+
+// -------------------- FUNCION MAIN -------------------- //
+int main() {
+    srand(time(0));
+    jugarMastermind();
+    return 0;
+}
