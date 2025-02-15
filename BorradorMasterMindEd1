@@ -1,10 +1,20 @@
+// Este algoritmo responde al ocio del juego MasterMind, 
+// el cual consiste en adivinar una clave de 4 digitos (1-6) sin repetir numeros. 
+// Los integrantes del grupo 4 somos: 
+// Daniel Eduardo Blandino - ID: 1120686
+// Gabriel Lopez Read - ID: 1118597
+// Bryan Alejandro Diaz - ID: 1126022
+// Franmy Emil Bautista Ramírez - ID: 1124462
+// Steven Diaz - ID: 1125897
+
+
 #include <iostream>
 #include <ctime>
 #include <cstdlib>
 #include <cstring>
 #include <limits>
 #include <string>
-//---Ver que se puede mejorar para que siga la Big(O)---//
+
 using namespace std;
 
 const int TAMANO = 4;
@@ -69,23 +79,29 @@ void leerIntento(int intento[]) {
     }
 }
 
-// -------------------- FUNCION PARA EVALUAR EL INTENTO (CORREGIDA) -------------------- //
+// -------------------- FUNCION PARA EVALUAR EL INTENTO -------------------- //
 void evaluarIntento(int clave[], int intento[]) {
     char pistas[TAMANO] = { 'X', 'X', 'X', 'X' };  // X = No acierto por defecto
+    bool usadoClave[TAMANO] = { false };
+    bool usadoIntento[TAMANO] = { false };
 
     // Paso 1: Verificar aciertos exactos (C)
     for (int i = 0; i < TAMANO; i++) {
         if (intento[i] == clave[i]) {
             pistas[i] = 'C';  // Correcto en la posicion correcta
+            usadoClave[i] = true;
+            usadoIntento[i] = true;
         }
     }
 
     // Paso 2: Verificar aciertos desordenados (F)
     for (int i = 0; i < TAMANO; i++) {
-        if (pistas[i] != 'C') {
+        if (!usadoIntento[i]) {
             for (int j = 0; j < TAMANO; j++) {
-                if (intento[i] == clave[j] && pistas[j] == 'X' && intento[j] != clave[j]) {
+                if (intento[i] == clave[j] && !usadoClave[j]) {
                     pistas[i] = 'F';  // Correcto, pero en la posicion incorrecta
+                    usadoClave[j] = true;
+                    usadoIntento[i] = true;
                     break;
                 }
             }
@@ -116,12 +132,15 @@ void jugarMastermind() {
         leerIntento(intento);
         evaluarIntento(clave, intento);
 
-        // Para verificar que gano
+        // Verificar si el usuario ha ganado
         if (memcmp(clave, intento, sizeof(clave)) == 0) {
             cout << "\nCampeon! Has adivinado la clave en " << intentos << " intentos.\n";
             cout << "Tu puntuacion es: " << (10 - intentos) << "\n";
             return;
         }
+
+        // Mostrar intentos restantes
+        cout << "Te quedan " << (INTENTOS_MAX - intentos) << " intentos.\n";
     }
 
     // Si el usuario no adivina
