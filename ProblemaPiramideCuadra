@@ -1,0 +1,25 @@
+#include <iostream>
+#include <cmath>
+
+using namespace std;
+
+int main() {
+    int total_bolas = 10000; // Cantidad total de bolas
+    int capas = 0; // Número de capas que se pueden formar
+    int bolas_usadas = 0; // Contador de bolas utilizadas
+    int lado = 1; // Longitud del lado de la base de la capa actual
+
+    while (bolas_usadas + (lado * lado) <= total_bolas) {
+        int bolas_en_capa = lado * lado; // Número de bolas en la capa actual
+        bolas_usadas += bolas_en_capa; // Agregamos al total de bolas utilizadas
+        capas++; // Incrementamos la cantidad de capas
+        lado++; // Aumentamos el lado para la siguiente capa
+    }
+
+    int bolas_sobrantes = total_bolas - bolas_usadas; // Bolas que no se pudieron usar
+
+    cout << "Capas formadas: " << capas << endl;
+    cout << "Bolas sobrantes: " << bolas_sobrantes << endl;
+
+    return 0;
+}
