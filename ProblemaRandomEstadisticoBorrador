@@ -1,0 +1,86 @@
+#include <iostream>
+#include <cstdlib>
+#include <ctime>
+#include <cmath>
+#include <map>
+
+using namespace std;
+
+void generarNumeros(int arr[], int n) {
+    srand(time(0));
+    for (int i = 0; i < n; i++) {
+        arr[i] = rand() % 100 + 1; // Números entre 1 y 100
+    }
+}
+
+int encontrarMayor(int arr[], int n) {
+    int mayor = arr[0];
+    for (int i = 1; i < n; i++) {
+        if (arr[i] > mayor) {
+            mayor = arr[i];
+        }
+    }
+    return mayor;
+}
+
+int encontrarMenor(int arr[], int n) {
+    int menor = arr[0];
+    for (int i = 1; i < n; i++) {
+        if (arr[i] < menor) {
+            menor = arr[i];
+        }
+    }
+    return menor;
+}
+
+float calcularPromedio(int arr[], int n) {
+    float suma = 0;
+    for (int i = 0; i < n; i++) {
+        suma += arr[i];
+    }
+    return suma / n;
+}
+
+int calcularModa(int arr[], int n) {
+    map<int, int> frecuencia;
+    for (int i = 0; i < n; i++) {
+        frecuencia[arr[i]]++;
+    }
+    int moda = arr[0];
+    int max_frec = 0;
+    for (auto& par : frecuencia) {
+        if (par.second > max_frec) {
+            max_frec = par.second;
+            moda = par.first;
+        }
+    }
+    return moda;
+}
+
+float calcularDesviacionEstandar(int arr[], int n, float promedio) {
+    float suma = 0;
+    for (int i = 0; i < n; i++) {
+        suma += pow(arr[i] - promedio, 2);
+    }
+    return sqrt(suma / n);
+}
+
+int main() {
+    int n;
+    do {
+        cout << "Ingrese la cantidad de numeros a evaluar (máximo 100): ";
+        cin >> n;
+    } while (n <= 0 || n > 100);
+
+    int numeros[n];
+    generarNumeros(numeros, n);
+    
+    float promedio = calcularPromedio(numeros, n);
+    cout << "Mayor: " << encontrarMayor(numeros, n) << endl;
+    cout << "Menor: " << encontrarMenor(numeros, n) << endl;
+    cout << "Moda: " << calcularModa(numeros, n) << endl;
+    cout << "Promedio: " << promedio << endl;
+    cout << "Desviación estándar: " << calcularDesviacionEstandar(numeros, n, promedio) << endl;
+    
+    return 0;
+}
