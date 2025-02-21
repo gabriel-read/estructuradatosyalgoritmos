@@ -69,7 +69,12 @@ int main() {
     int n;
     do {
         cout << "Ingrese la cantidad de numeros a evaluar (máximo 100): ";
-        cin >> n;
+        if (!(cin >> n)) {
+            cout << "Error: Debe ingresar un número válido." << endl;
+            cin.clear(); // Limpia el estado de error
+            cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Descarta la entrada incorrecta
+            continue;
+        }
     } while (n <= 0 || n > 100);
 
     int numeros[n];
